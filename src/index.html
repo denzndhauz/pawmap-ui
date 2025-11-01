@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Awesome Capacitor App</title>
+    <meta
+      name="viewport"
+      content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+
+    <script
+      type="module"
+      src="https://unpkg.com/@ionic/pwa-elements@latest/dist/ionicpwaelements/ionicpwaelements.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://unpkg.com/@ionic/pwa-elements@latest/dist/ionicpwaelements/ionicpwaelements.js"
+    ></script>
+
+    <link rel="icon" type="image/x-icon" href="./assets/icon/favicon.ico" />
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <meta name="theme-color" content="#4FB3E8" />
+  </head>
+  <body>
+    <div class="slider-container">
+      <div class="slide">
+        <h1>Welcome to PawMap</h1>
+        <img src="./assets/icon/pawmap-logo.png" alt="PawMap Logo">
+        <p>Your trusted companion in pet care navigation</p>
+      </div>
+      <div class="slide">
+        <h2>Find Nearby Pet Care</h2>
+        <p>Locate the nearest veterinary clinics and pet hospitals in your area</p>
+      </div>
+      <div class="slide">
+        <h2>Quick Contact</h2>
+        <p>Access contact details and emergency information for pet care facilities</p>
+      </div>
+      <div class="slide">
+        <h2>Start Your Journey</h2>
+        <p>Keep your furry friends healthy and safe with PawMap</p>
+        <div class="auth-buttons">
+          <a href="./pages/login.html" class="auth-btn login-btn">Login</a>
+          <a href="./pages/register.html" class="auth-btn register-btn">Register</a>
+        </div>
+      </div>
+      <div class="slider-nav">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+      <button class="arrow-btn prev-btn">&lt;</button>
+      <button class="arrow-btn next-btn">&gt;</button>
+    </div>
+    <script src="./js/slider.js" type="module"></script>
+  </body>
+</html>

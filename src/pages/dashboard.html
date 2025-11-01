@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PawMap - Dashboard</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="top-bar">
+            <button class="nav-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <button class="notification-btn">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge">3</span>
+            </button>
+            <div class="spacer"></div>
+            <img src="../assets/icon/pawmap-logo.png" alt="PawMap Logo" class="top-logo">
+        </div>
+        <div class="nav-overlay"></div>
+        <nav class="side-nav">
+            <ul class="nav-links">
+                <li><a href="dashboard.html"><i class="fas fa-paw"></i> My Pets</a></li>
+                <li><a href="vet-maps.html"><i class="fas fa-map-marker-alt"></i> Vet Maps</a></li>
+                <li><a href="add-pet.html"><i class="fas fa-plus-circle"></i> Add New Pet</a></li>
+                <li><a href="ai-vet.html"><i class="fas fa-robot"></i> AI Vet Assistant</a></li>
+                <li><a href="appointments.html"><i class="fas fa-calendar-alt"></i> Appointments</a></li>
+                <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+        </nav>
+        
+        <main class="main-content">
+            <header class="content-header">
+                <div class="header-left">
+                    <h1>My Pets</h1>
+                    <div class="view-toggles">
+                        <button class="view-toggle active" data-view="grid">
+                            <i class="fas fa-th-large"></i>
+                        </button>
+                        <button class="view-toggle" data-view="list">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button onclick="window.location.href='add-pet.html'" class="add-pet-btn"><i class="fas fa-plus"></i> Add New Pet</button>
+                </div>
+            </header>
+            
+            <div class="pet-container grid-view">
+                <!-- Example Pet Card -->
+                <div class="pet-card">
+                    <div class="pet-photo">
+                        <img src="../assets/default-pet.png" alt="Pet Photo">
+                    </div>
+                    <div class="pet-info">
+                        <h3>Max</h3>
+                        <p class="age"><i class="fas fa-birthday-cake"></i> 2 years old</p>
+                        <p class="breed"><i class="fas fa-dog"></i> German Shepherd</p>
+                        <p class="weight"><i class="fas fa-weight"></i> 30 kg</p>
+                        <button class="med-btn" onclick="openMedModal('Max')">
+                            <i class="fas fa-pills"></i>
+                            <span class="med-count">2</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Medication Modal -->
+        <div id="medModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2><span id="petName"></span>'s Medications</h2>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="med-list">
+                        <!-- Example medication -->
+                        <div class="med-item">
+                            <div class="med-info">
+                                <h4>Heartworm Prevention</h4>
+                                <p>Monthly, Every 1st of the month</p>
+                            </div>
+                            <div class="med-actions">
+                                <button class="edit-med"><i class="fas fa-edit"></i></button>
+                                <button class="delete-med"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="add-med-btn">
+                        <i class="fas fa-plus"></i> Add New Medication
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add/Edit Medication Form Modal -->
+        <div id="medFormModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Add New Medication</h2>
+                    <button class="close-modal" data-modal="medFormModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="medForm" class="med-form">
+                        <div class="form-group">
+                            <label>Medication Name</label>
+                            <input type="text" id="medName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Dosage</label>
+                            <input type="text" id="medDosage" placeholder="e.g., 1 tablet" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Times per Day</label>
+                                <input type="number" id="medFrequency" min="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Duration (Days)</label>
+                                <input type="number" id="medDuration" min="1" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Start Date</label>
+                            <input type="date" id="medStartDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Notes</label>
+                            <textarea id="medNotes" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="submit-med-btn">Save Medication</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/medications.js"></script>
+    <script src="../js/dashboard.js"></script>
+</body>
+</html>

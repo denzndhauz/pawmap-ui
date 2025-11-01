@@ -1,0 +1,10 @@
+{
+  "appId": "com.pawmap.app",
+  "appName": "PawMap",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchAutoHide": false
+    }
+  }
+}
