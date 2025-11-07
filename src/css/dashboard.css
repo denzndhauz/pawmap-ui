@@ -264,11 +264,20 @@ body {
 }
 
 .pet-container.list-view .med-btn {
+    position: relative;
     background: none;
     border: none;
     padding: 8px;
     margin: 0;
-    width: auto;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.pet-container.list-view .med-btn:hover {
+    background: rgba(79, 179, 232, 0.1);
+    transform: scale(1.1);
 }
 
 .pet-container.list-view .med-btn i {
@@ -276,9 +285,12 @@ body {
     color: var(--primary-color);
 }
 
-.pet-container.list-view .med-btn .med-count {
-    top: -5px;
-    right: -5px;
+.pet-container.list-view .med-btn:hover i {
+    color: #3d8eb8;
+}
+
+.pet-container.list-view .med-label {
+    display: none;
 }
 
 .nav-toggle {
@@ -339,6 +351,7 @@ body {
 }
 
 .med-btn {
+    position: relative;
     background: var(--primary-color);
     color: white;
     border: none;
@@ -351,7 +364,6 @@ body {
     margin-top: 15px;
     width: 100%;
     justify-content: center;
-    position: relative;
 }
 
 .med-count {
@@ -526,6 +538,113 @@ body {
     align-items: center;
     justify-content: center;
     font-weight: bold;
+}
+
+.notification-dropdown {
+    display: none;
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    width: 350px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+.notification-dropdown.show {
+    display: block;
+}
+
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.notification-header h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.mark-all-read {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.notification-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    display: flex;
+    align-items: start;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    transition: background 0.3s;
+}
+
+.notification-item:hover {
+    background: #f8f9fa;
+}
+
+.notification-item.unread {
+    background: #f0f9ff;
+}
+
+.notification-icon {
+    font-size: 20px;
+    margin-right: 15px;
+    padding: 10px;
+    border-radius: 50%;
+}
+
+.notification-icon.medicine {
+    background: #e1f5fe;
+    color: #03a9f4;
+}
+
+.notification-icon.vaccine {
+    background: #f3e5f5;
+    color: #9c27b0;
+}
+
+.notification-icon.update {
+    background: #e8f5e9;
+    color: #4caf50;
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-text {
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.notification-time {
+    font-size: 12px;
+    color: #666;
+}
+
+.mark-read {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    padding: 5px;
+}
+
+.unread .mark-read {
+    color: var(--primary-color);
 }
 
 @media (max-width: 768px) {

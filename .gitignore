@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Production builds
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Capacitor
+android/
+ios/
+.capacitor/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+*.DS_Store
+*/.DS_Store
+Thumbs.db
+
+# Logs
+*.log

@@ -1,0 +1,225 @@
+.maps-container {
+    height: calc(100vh - 80px);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 20px;
+    padding: 20px;
+}
+
+.search-box {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 1;
+    display: flex;
+    gap: 10px;
+    width: calc(100% - 40px);
+    max-width: 400px;
+}
+
+#search-input {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 25px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    font-size: 14px;
+}
+
+#locate-me {
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 50%;
+    background: white;
+    color: var(--primary-color);
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+}
+
+.vet-list {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    border-radius: 15px 15px 0 0;
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.vet-item {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.vet-item:hover {
+    background: #f8f9fa;
+}
+
+.vet-item h3 {
+    margin: 0 0 5px 0;
+    color: #333;
+}
+
+.vet-item p {
+    margin: 5px 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.vet-item .rating {
+    color: #ffc107;
+}
+
+.list-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.panel-header {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    flex-shrink: 0;
+    background: white;
+    border-radius: 15px 15px 0 0;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.filter-btn {
+    padding: 8px 16px;
+    border: 1px solid var(--primary-color);
+    border-radius: 20px;
+    background: none;
+    color: var(--primary-color);
+    cursor: pointer;
+}
+
+.filter-btn.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+.places-list {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0;
+    margin: 0;
+    scrollbar-width: thin;
+    scrollbar-color: #4FB3E8 #f0f0f0;
+}
+
+.places-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.places-list::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 3px;
+}
+
+.places-list::-webkit-scrollbar-thumb {
+    background: #4FB3E8;
+    border-radius: 3px;
+}
+
+.place-item {
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    background: white;
+}
+
+.place-item:hover {
+    background: #f8f9fa;
+}
+
+.place-type {
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    margin-right: 8px;
+}
+
+.place-type.vet {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.place-type.petshop {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.place-contact {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #666;
+}
+
+.place-contact i {
+    width: 20px;
+    color: var(--primary-color);
+}
+
+.place-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.nearest-btn {
+    background: #ffc107;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.nearest-btn:disabled {
+    background: #95c12e;
+    cursor: default;
+}
+
+@media (max-width: 768px) {
+    .maps-container {
+        grid-template-columns: 1fr;
+    }
+
+    .search-box {
+        width: calc(100% - 40px);
+    }
+
+    .vet-list {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 200px;
+        border-radius: 15px 15px 0 0;
+    }
+}
