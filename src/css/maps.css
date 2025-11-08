@@ -9,9 +9,9 @@
 
 .search-box {
     position: absolute;
-    top: 20px;
+    top: 100px; /* Moved down to avoid navbar overlap */
     left: 20px;
-    z-index: 1;
+    z-index: 900; /* Between side nav and top bar */
     display: flex;
     gap: 10px;
     width: calc(100% - 40px);
@@ -20,22 +20,57 @@
 
 #search-input {
     flex: 1;
-    padding: 12px;
+    padding: 12px 16px;
     border: none;
-    border-radius: 25px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    font-size: 14px;
+    border-radius: 8px;
+    font-size: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    outline: none;
+    background: white;
+    z-index: 1001;
+}
+
+#search-input:focus {
+    box-shadow: 0 2px 15px rgba(79, 179, 232, 0.3);
+    border: 2px solid #4FB3E8;
 }
 
 #locate-me {
-    width: 42px;
-    height: 42px;
+    padding: 12px;
+    background: #4FB3E8;
+    color: white;
     border: none;
-    border-radius: 50%;
-    background: white;
-    color: var(--primary-color);
+    border-radius: 8px;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    min-width: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#locate-me:hover {
+    background: #3a9fd1;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.maps-container {
+    height: calc(100vh - 80px);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 20px;
+    padding: 20px;
+}
+
+.map-section {
+    position: relative;
+    height: 100%;
+    border-radius: 15px;
+    overflow: hidden;
+    z-index: 1;
 }
 
 #map {
@@ -184,25 +219,85 @@
 .place-actions {
     display: flex;
     gap: 10px;
-    margin-top: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
 }
 
-.nearest-btn {
-    background: #ffc107;
-    border: none;
-    color: white;
+.place-actions button {
+    flex: 1;
+    min-width: 120px;
     padding: 8px 12px;
-    border-radius: 15px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
-    gap: 5px;
+    justify-content: center;
+    gap: 6px;
+}
+
+.directions-btn {
+    background: #4FB3E8;
+    color: white;
+}
+
+.directions-btn:hover {
+    background: #3a9fd1;
+    transform: translateY(-1px);
+}
+
+.call-btn {
+    background: #28a745;
+    color: white;
+}
+
+.call-btn:hover {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+.call-btn:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.call-btn:disabled:hover {
+    transform: none;
+    background: #6c757d;
+}
+
+.save-location-btn {
+    background: #17a2b8;
+    color: white;
+}
+
+.save-location-btn:hover {
+    background: #138496;
+    transform: translateY(-1px);
+}
+
+.save-location-btn.saved {
+    background: #28a745;
+}
+
+.nearest-btn {
+    background: #ffc107;
+    color: #212529;
+}
+
+.nearest-btn:hover {
+    background: #e0a800;
+    transform: translateY(-1px);
 }
 
 .nearest-btn:disabled {
-    background: #95c12e;
-    cursor: default;
+    background: #28a745;
+    color: white;
+    cursor: not-allowed;
 }
 
 @media (max-width: 768px) {

@@ -4,93 +4,127 @@ let petShopMarkers = [];
 let infoWindow;
 let savedLocations = [];
 let nearestLocations = [];
+let allPlaces = []; // Store all loaded places for filtering
 
-async function initMap() {
+function initMap() {
+    // Prevent double initialization
+    if (window.mapInitialized) {
+        return;
+    }
+    window.mapInitialized = true;
+
     try {
-        // Load required libraries
-        const { Map } = await google.maps.importLibrary("maps");
-        const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
-        const { PlacesService } = await google.maps.importLibrary("places");
+        console.log('Initializing Google Maps...');
         
+        // Check if Google Maps API is available
+        if (typeof google === 'undefined' || !google.maps) {
+            throw new Error('Google Maps API not loaded');
+        }
+
+        console.log('Google Maps API loaded successfully');
+
         // Get user's location first
-        const position = await getCurrentLocation();
-        const userLocation = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-        };
+        getCurrentLocation()
+            .then(position => {
+                const userLocation = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
 
-        // Initialize map centered on user's location
-        map = new Map(document.getElementById('map'), {
-            center: userLocation,
-            zoom: 14,
-            mapId: 'PAWMAP_MAP_ID',
-            mapTypeControl: false,
-            fullscreenControl: false,
-            streetViewControl: false,
-            zoomControlOptions: {
-                position: google.maps.ControlPosition.RIGHT_CENTER
-            },
-            restriction: {
-                strictBounds: false,
-            }
-        });
+                // Initialize map with traditional API
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: userLocation,
+                    zoom: 14,
+                    mapTypeControl: false,
+                    fullscreenControl: false,
+                    streetViewControl: false,
+                    zoomControlOptions: {
+                        position: google.maps.ControlPosition.RIGHT_CENTER
+                    }
+                });
 
-        infoWindow = new google.maps.InfoWindow();
-        const service = new PlacesService(map);
+                infoWindow = new google.maps.InfoWindow();
+                const service = new google.maps.places.PlacesService(map);
 
-        // Add user location marker
-        const userMarker = new AdvancedMarkerElement({
-            map,
-            position: userLocation,
-            title: 'Your Location',
-            content: new PinElement({
-                background: '#4FB3E8',
-                borderColor: '#ffffff',
-                glyphColor: '#ffffff',
-                scale: 1.2
-            }).element,
-            zIndex: 999
-        });
+                // Add user location marker
+                const userMarker = new google.maps.Marker({
+                    position: userLocation,
+                    map: map,
+                    title: 'Your Location',
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        fillColor: '#4FB3E8',
+                        fillOpacity: 0.8,
+                        strokeColor: '#ffffff',
+                        strokeWeight: 2,
+                        scale: 10
+                    },
+                    zIndex: 999
+                });
 
-        // Add accuracy circle
-        new google.maps.Circle({
-            map: map,
-            center: userLocation,
-            radius: position.coords.accuracy || 100,
-            strokeColor: '#4FB3E8',
-            strokeOpacity: 0.2,
-            strokeWeight: 1,
-            fillColor: '#4FB3E8',
-            fillOpacity: 0.1
-        });
+                // Add accuracy circle
+                new google.maps.Circle({
+                    map: map,
+                    center: userLocation,
+                    radius: position.coords.accuracy || 100,
+                    strokeColor: '#4FB3E8',
+                    strokeOpacity: 0.2,
+                    strokeWeight: 1,
+                    fillColor: '#4FB3E8',
+                    fillOpacity: 0.1
+                });
 
-        // Store user location globally for reference
-        window.userLocation = userLocation;
+                // Store user location globally
+                window.userLocation = userLocation;
 
-        // Search for nearby places immediately
-        searchNearbyPlaces(service, userLocation);
+                // Search for nearby places
+                searchNearbyPlaces(service, userLocation);
 
-        // Initialize search functionality
-        setupSearch(service);
+                // Setup search functionality
+                setupSearch(service);
+            })
+            .catch(error => {
+                console.error('Geolocation error:', error);
+                initMapWithFallback();
+            });
         
     } catch (error) {
-        console.error('Error getting location:', error);
-        // Fallback to default location if geolocation fails
-        await initMapWithFallback();
+        console.error('Error initializing map:', error);
+        showMapError(error.message);
+    }
+}
+
+function showMapError(message) {
+    const mapElement = document.getElementById('map');
+    if (mapElement) {
+        mapElement.innerHTML = `
+            <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f5f5f5; color: #666; text-align: center; padding: 20px;">
+                <div>
+                    <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 20px; color: #ff6b6b;"></i>
+                    <h3>Map Loading Error</h3>
+                    <p>${message}</p>
+                    <div style="margin-top: 20px; font-size: 14px; text-align: left; background: #fff; padding: 15px; border-radius: 5px;">
+                        <strong>Troubleshooting steps:</strong><br>
+                        1. Check Google Cloud Console for API key status<br>
+                        2. Verify that Maps JavaScript API is enabled<br>
+                        3. Verify that Places API is enabled<br>
+                        4. Check API key restrictions (allow your domain)<br>
+                        5. Ensure billing is enabled and within quota limits<br>
+                        6. Try refreshing the page
+                    </div>
+                </div>
+            </div>
+        `;
     }
 }
 
 async function initMapWithFallback() {
-    const { Map } = await google.maps.importLibrary("maps");
-    const { PlacesService } = await google.maps.importLibrary("places");
-    
     // Default location (you can change this to any default coordinates)
     const defaultLocation = { lat: 40.7128, lng: -74.0060 }; // New York City
     
-    map = new Map(document.getElementById('map'), {
+    map = new google.maps.Map(document.getElementById('map'), {
         center: defaultLocation,
         zoom: 14,
-        mapId: 'PAWMAP_MAP_ID',
         mapTypeControl: false,
         fullscreenControl: false,
         streetViewControl: false,
@@ -100,7 +134,7 @@ async function initMapWithFallback() {
     });
 
     infoWindow = new google.maps.InfoWindow();
-    const service = new PlacesService(map);
+    const service = new google.maps.places.PlacesService(map);
     
     setupSearch(service);
     handleLocationError(true, infoWindow, defaultLocation);
@@ -149,19 +183,19 @@ document.addEventListener('DOMContentLoaded', () => {
     loadSavedLocations();
     loadNearestLocations();
     
-    // Initialize map when Google Maps is ready
-    if (typeof google !== 'undefined' && google.maps && google.maps.importLibrary) {
-        initMap().catch(error => {
-            console.error('Error initializing map:', error);
-        });
-    } else {
-        // Wait for Google Maps to load
-        window.addEventListener('load', () => {
-            initMap().catch(error => {
-                console.error('Error initializing map:', error);
-            });
-        });
-    }
+    // Set up the map initializer for the callback
+    window.mapInitializer = function() {
+        console.log('Map initializer called');
+        initMap();
+    };
+    
+    // Fallback in case callback doesn't work
+    setTimeout(() => {
+        if (typeof google !== 'undefined' && google.maps && !window.mapInitialized) {
+            console.log('Fallback: Google Maps ready, initializing...');
+            initMap();
+        }
+    }, 2000);
     
     // Add filter functionality
     setTimeout(() => {
@@ -171,18 +205,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 
-                if (type === 'saved') {
-                    showSavedLocations();
-                } else if (type === 'nearest') {
-                    showNearestLocations();
-                } else {
-                    document.querySelectorAll('.place-item').forEach(item => {
-                        if (type === 'all' || item.querySelector(`.place-type.${type}`)) {
-                            item.style.display = 'block';
-                        } else {
-                            item.style.display = 'none';
-                        }
-                    });
+                switch(type) {
+                    case 'all':
+                        showAllLocations();
+                        break;
+                    case 'saved':
+                        showSavedLocations();
+                        break;
+                    case 'nearest':
+                        showNearestLocations();
+                        break;
+                    case 'vet':
+                        filterPlacesByType('vet');
+                        break;
+                    case 'petshop':
+                        filterPlacesByType('petshop');
+                        break;
+                    default:
+                        showAllLocations();
                 }
             });
         });
@@ -224,18 +264,19 @@ function clearMarkers() {
     }
 }
 
-async function createMarker(place, type) {
-    const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
-    
-    const marker = new AdvancedMarkerElement({
-        map,
+function createMarker(place, type) {
+    const marker = new google.maps.Marker({
         position: place.geometry.location,
+        map: map,
         title: place.name,
-        content: new PinElement({
-            background: type === 'vet' ? '#4FB3E8' : '#FF8C00',
-            borderColor: '#FFFFFF',
-            scale: 1
-        }).element
+        icon: {
+            path: google.maps.SymbolPath.CIRCLE,
+            fillColor: type === 'vet' ? '#4FB3E8' : '#FF8C00',
+            fillOpacity: 0.8,
+            strokeColor: '#FFFFFF',
+            strokeWeight: 2,
+            scale: 8
+        }
     });
 
     markers.push(marker);
@@ -304,6 +345,8 @@ function searchNearbyPlaces(service, userLocation) {
                 
                 if (places.length > 0) {
                     places.sort((a, b) => a.distance - b.distance);
+                    allPlaces = places; // Store all places for filtering
+                    
                     places.forEach(place => {
                         createMarker(place, place.type);
                         getPlaceDetails(service, place, place.type);
@@ -316,6 +359,7 @@ function searchNearbyPlaces(service, userLocation) {
                     }, 500);
                 } else {
                     placesList.innerHTML = '<div style="padding: 20px; text-align: center;">No nearby places found.</div>';
+                    allPlaces = [];
                 }
             }
         });
@@ -361,20 +405,30 @@ function loadSavedLocations() {
 }
 
 function savePlaceToStorage(place) {
-    const placeData = {
-        id: place.place_id,
-        name: place.name,
-        address: place.formatted_address,
-        phone: place.formatted_phone_number,
-        type: place.type,
-        location: {
+    // Handle cases where geometry might not be available
+    let location = null;
+    
+    if (place.geometry && place.geometry.location) {
+        location = {
             lat: typeof place.geometry.location.lat === 'function' 
                 ? place.geometry.location.lat() 
                 : place.geometry.location.lat,
             lng: typeof place.geometry.location.lng === 'function' 
                 ? place.geometry.location.lng() 
                 : place.geometry.location.lng
-        }
+        };
+    } else if (place.location) {
+        // Fallback to direct location property if available
+        location = place.location;
+    }
+    
+    const placeData = {
+        id: place.place_id,
+        name: place.name,
+        address: place.formatted_address,
+        phone: place.formatted_phone_number,
+        type: place.type,
+        location: location
     };
 
     if (!savedLocations.some(loc => loc.id === placeData.id)) {
@@ -452,6 +506,8 @@ function createPlaceListItem(place, type) {
     saveBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         if (!isSaved) {
+            // Add type to place object before saving
+            place.type = type;
             savePlaceToStorage(place);
             saveBtn.classList.add('saved');
             saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Saved';
@@ -465,6 +521,8 @@ function createPlaceListItem(place, type) {
     const nearestBtn = item.querySelector('.nearest-btn');
     nearestBtn.addEventListener('click', (e) => {
         e.stopPropagation();
+        // Add type to place object before saving
+        place.type = type;
         saveToNearest(place);
         nearestBtn.disabled = true;
         nearestBtn.innerHTML = '<i class="fas fa-check"></i> Added to Nearest';
@@ -517,6 +575,11 @@ function showNearestLocations() {
     const placesList = document.querySelector('.places-list');
     placesList.innerHTML = '';
     
+    if (nearestLocations.length === 0) {
+        placesList.innerHTML = '<div style="padding: 20px; text-align: center;">No nearest locations saved yet.</div>';
+        return;
+    }
+    
     nearestLocations.forEach(place => {
         const item = document.createElement('div');
         item.className = 'place-item';
@@ -528,7 +591,86 @@ function showNearestLocations() {
                 <p><i class="fas fa-map-marker-alt"></i> ${place.address}</p>
                 <p><i class="fas fa-road"></i> ${place.distance.toFixed(1)} km away</p>
             </div>
+            <div class="place-actions">
+                <button class="directions-btn" data-lat="${place.location.lat}" data-lng="${place.location.lng}" data-name="${place.name}">
+                    <i class="fas fa-directions"></i> Get Directions
+                </button>
+                <button class="call-btn" ${place.phone ? `data-phone="${place.phone}"` : 'disabled'}>
+                    <i class="fas fa-phone"></i> ${place.phone ? 'Call' : 'No Phone'}
+                </button>
+            </div>
         `;
+        
+        // Add directions button functionality
+        const directionsBtn = item.querySelector('.directions-btn');
+        directionsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const lat = e.target.closest('.directions-btn').dataset.lat;
+            const lng = e.target.closest('.directions-btn').dataset.lng;
+            const name = e.target.closest('.directions-btn').dataset.name;
+            openDirections(lat, lng, name);
+        });
+        
+        // Add call button functionality
+        const callBtn = item.querySelector('.call-btn');
+        if (place.phone) {
+            callBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const phone = e.target.closest('.call-btn').dataset.phone;
+                window.open(`tel:${phone}`, '_self');
+            });
+        }
+        
+        // Add click to center on map
+        item.addEventListener('click', () => {
+            if (place.location) {
+                map.setCenter(place.location);
+                map.setZoom(15);
+                
+                // Create info window content
+                infoWindow.setContent(`
+                    <div class="info-window">
+                        <h3>${place.name}</h3>
+                        <p>${place.address}</p>
+                        <p>Distance: ${place.distance.toFixed(1)} km</p>
+                        ${place.phone ? `<p>Phone: ${place.phone}</p>` : ''}
+                    </div>
+                `);
+                infoWindow.setPosition(place.location);
+                infoWindow.open(map);
+            }
+        });
+        
         placesList.appendChild(item);
     });
 }
+
+function openDirections(lat, lng, placeName) {
+    // Get user's current location for directions
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const userLat = position.coords.latitude;
+                const userLng = position.coords.longitude;
+                
+                // Create Google Maps directions URL
+                const directionsUrl = `https://www.google.com/maps/dir/${userLat},${userLng}/${lat},${lng}/@${lat},${lng},15z/data=!4m2!4m1!3e0`;
+                
+                // Open in new tab/window
+                window.open(directionsUrl, '_blank');
+            },
+            (error) => {
+                console.error('Error getting current location:', error);
+                // Fallback: open directions without start location
+                const directionsUrl = `https://www.google.com/maps/dir//${lat},${lng}/@${lat},${lng},15z`;
+                window.open(directionsUrl, '_blank');
+            }
+        );
+    } else {
+        // Fallback for browsers without geolocation
+        const directionsUrl = `https://www.google.com/maps/dir//${lat},${lng}/@${lat},${lng},15z`;
+        window.open(directionsUrl, '_blank');
+    }
+}
+
+// ...existing code...

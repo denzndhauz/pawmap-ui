@@ -24,7 +24,7 @@ body {
     position: fixed;
     height: 100vh;
     padding: 80px 0 20px 0; /* Increased top padding to account for top bar */
-    z-index: 98; /* Ensure it's below the top bar */
+    z-index: 800; /* Lower than top bar but higher than map */
 }
 
 .nav-header {
@@ -330,7 +330,7 @@ body {
     align-items: center;
     padding: 0 20px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    z-index: 1000;
+    z-index: 1000; /* Higher than side nav */
     justify-content: flex-start;
 }
 

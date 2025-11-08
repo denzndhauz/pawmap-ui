@@ -5,7 +5,7 @@ node_modules/
 dist/
 build/
 
-# Environment variables
+# Environment variables (exclude the real env file but keep the fallback)
 .env
 .env.local
 .env.production
@@ -20,8 +20,7 @@ ios/
 .idea/
 
 # OS
-*.DS_Store
-*/.DS_Store
+.DS_Store
 Thumbs.db
 
 # Logs
